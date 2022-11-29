@@ -214,9 +214,65 @@
 
               // Next thing is to search for the next place
               // The bar chart will need to be placed within the next search
+              var bars_request = {
+                bounds: map.getBounds(pgeom.viewport),
+                type: ['bar']
+              };
 
+              service.nearbySearch(bars_request, function(results_rest, status_rest, pagination) {
 
-              stats.push({place: 'Bars', num: 3, avg_rating: 4.21}) // I added this as a dummy for bars to as an example for the bar chart
+                rating_rest = []
+
+                for(var i = 0; i < results_rest.length; i++){
+                  if(results_rest[i].types[0] == 'bar' && results_rest[i].rating != null){
+                    rating_rest.push(results_rest[i].rating)
+                  }
+                }
+
+                avg_rating_restaurant = Math.round(rating_rest.reduce((a, b) => a + b) / rating_rest.length * 100)/100
+                num_restaurant = rating_rest.length
+
+                stats.push({place: 'Bars', num: num_restaurant, avg_rating: avg_rating_restaurant})
+
+                var supermarket_request = {
+                  bounds: map.getBounds(pgeom.viewport),
+                  type: ['supermarket']
+                };
+
+                service.nearbySearch(supermarket_request, function(results_rest, status_rest, pagination) {
+
+                  rating_rest = []
+
+                  for(var i = 0; i < results_rest.length; i++){
+                    if(results_rest[i].types[0] == 'supermarket' && results_rest[i].rating != null){
+                      rating_rest.push(results_rest[i].rating)
+                    }
+                  }
+
+                  avg_rating_restaurant = Math.round(rating_rest.reduce((a, b) => a + b) / rating_rest.length * 100)/100
+                  num_restaurant = rating_rest.length
+
+                  stats.push({place: 'Supermarket', num: num_restaurant, avg_rating: avg_rating_restaurant})
+                  
+                  var cafe_request = {
+                    bounds: map.getBounds(pgeom.viewport),
+                    type: ['cafe']
+                  };
+
+                  service.nearbySearch(cafe_request, function(results_rest, status_rest, pagination) {
+
+                    rating_rest = []
+
+                    for(var i = 0; i < results_rest.length; i++){
+                      if(results_rest[i].types[0] == 'cafe' && results_rest[i].rating != null){
+                        rating_rest.push(results_rest[i].rating)
+                      }
+                    }
+
+                    avg_rating_restaurant = Math.round(rating_rest.reduce((a, b) => a + b) / rating_rest.length * 100)/100
+                    num_restaurant = rating_rest.length
+
+                    stats.push({place: 'Cafe', num: num_restaurant, avg_rating: avg_rating_restaurant})
 
 
               // Place all of the chart within the new search
@@ -235,6 +291,8 @@
                 .attr("transform", "translate(75, 50)")
                 .attr('color', '#fbf6ef')
                 .call(d3.axisLeft(y))
+
+              console.log(stats)
 
               bar_chart = chart.append('g')
                 .attr('id', 'bars')
@@ -278,6 +336,9 @@
               return featureStyleOptions;
           }
         };
+            });
+            });
+      });
       }
 
 
